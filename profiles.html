@@ -215,7 +215,21 @@
                 ' user profiles from userProfiles.json.';
         })
         .catch(err => {
-            statusPara.textContent = 'Could not load the user profiles: ' + err.message;
+            // Opening this file directly from disk (a file:// URL) makes the
+            // browser refuse the fetch() request, so explain that instead of
+            // only showing "Failed to fetch".
+            if (location.protocol === 'file:') {
+                statusPara.innerHTML = 'This page must be opened over HTTP, not from ' +
+                    'a local file. The browser blocks <code>fetch()</code> on ' +
+                    '<code>file://</code> URLs, so userProfiles.json cannot be loaded.<br>' +
+                    'Open the published page instead: ' +
+                    '<a href="https://lyf-1213.github.io/web-lab4/profiles.html">' +
+                    'https://lyf-1213.github.io/web-lab4/profiles.html</a><br>' +
+                    'Or serve this folder locally: <code>python -m http.server 8099</code>, ' +
+                    'then open <code>http://127.0.0.1:8099/profiles.html</code>.';
+            } else {
+                statusPara.textContent = 'Could not load the user profiles: ' + err.message;
+            }
             statusPara.classList.add('error');
             console.error('Fetch error: ' + err.message);
         });
