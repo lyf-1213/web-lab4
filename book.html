@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+    Name: 刘依枫 (Yifeng Liu)
+    Student ID: 247049
+    Date: 2026-10-14
+    Purpose: Lab 4 Part 1 - fetch book.xml, parse it with the DOMParser and
+             display every book's title, author and price on the page.
+    Filename: book.html
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="Lab 4, XML, DOMParser, fetch API, book catalogue">
+<title>Book Catalogue - Lab 4 XML</title>
+<style>
+    body {
+        margin: 0;
+        padding: 30px 15px;
+        background-color: rgb(240, 244, 250);
+        color: rgb(33, 43, 66);
+        font-family: "Segoe UI", Arial, sans-serif;
+        line-height: 1.5;
+    }
+    main {
+        max-width: 960px;
+        margin: 0 auto;
+        background-color: rgb(255, 255, 255);
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(33, 43, 66, 0.18);
+        padding: 25px 30px 35px;
+    }
+    h1 {
+        margin: 0 0 6px;
+        font-size: 1.9em;
+        color: rgb(20, 70, 130);
+        border-bottom: 3px solid rgb(20, 70, 130);
+        padding-bottom: 8px;
+    }
+    p.subtitle {
+        margin: 0 0 22px;
+        font-size: 0.95em;
+        color: rgb(95, 110, 135);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 1em;
+    }
+    caption {
+        caption-side: top;
+        text-align: left;
+        font-weight: bold;
+        padding-bottom: 8px;
+        color: rgb(20, 70, 130);
+    }
+    th, td {
+        border: 1px solid rgb(190, 205, 225);
+        padding: 9px 12px;
+        text-align: left;
+    }
+    thead th {
+        background-color: rgb(20, 70, 130);
+        color: rgb(255, 255, 255);
+        letter-spacing: 0.04em;
+    }
+    tbody tr:nth-child(even) {
+        background-color: rgb(244, 248, 253);
+    }
+    tbody tr:hover {
+        background-color: rgb(226, 238, 250);
+    }
+    td.price {
+        text-align: right;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+    }
+    td.id {
+        font-family: Consolas, "Courier New", monospace;
+        color: rgb(150, 60, 30);
+    }
+    p#status {
+        margin: 0 0 16px;
+        padding: 10px 14px;
+        border-radius: 6px;
+        background-color: rgb(232, 241, 252);
+        border-left: 5px solid rgb(20, 70, 130);
+        font-size: 0.95em;
+    }
+    p.error {
+        background-color: rgb(253, 235, 235) !important;
+        border-left-color: rgb(190, 40, 40) !important;
+        color: rgb(150, 20, 20);
+    }
+    footer {
+        max-width: 960px;
+        margin: 18px auto 0;
+        text-align: center;
+        font-size: 0.85em;
+        color: rgb(110, 125, 150);
+    }
+</style>
+</head>
+<body>
+<main>
+    <h1>Book Catalogue</h1>
+    <p class="subtitle">Lab 4 - Part 1: XML document <code>book.xml</code> fetched and parsed in the browser.</p>
+
+    <p id="status">Loading book.xml &hellip;</p>
+
+    <table id="bookTable" hidden>
+        <caption>Books in the catalogue</caption>
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Title</th>
+                <th scope="col">Author</th>
+                <th scope="col">Price</th>
+            </tr>
+        </thead>
+        <tbody id="bookRows"></tbody>
+    </table>
+</main>
+
+<footer>
+    <p>158.258 Web Development &bull; Lab 4 XML Lab &bull; 247049 刘依枫</p>
+</footer>
+
+<script>
+    // ------------------------------------------------------------------
+    // Lab 4 Part 1: load the XML catalogue with the fetch API, parse the
+    // XML string with DOMParser and write the data into the HTML table.
+    // ------------------------------------------------------------------
+    const statusPara = document.getElementById('status');
+    const bookTable = document.getElementById('bookTable');
+    const bookRows = document.getElementById('bookRows');
+
+    fetch('book.xml')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Fetch error: ' + response.status);
+            }
+            return response.text();          // XML arrives as plain text
+        })
+        .then(xmlText => {
+            // Turn the XML text into a document we can query
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+
+            // A parsererror element means the XML was not well-formed
+            const parseError = xmlDoc.getElementsByTagName('parsererror');
+            if (parseError.length > 0) {
+                throw new Error('XML parsing error: ' + parseError[0].textContent);
+            }
+
+            // Collect every <book> element in document order
+            const books = xmlDoc.getElementsByTagName('book');
+
+            for (let i = 0; i < books.length; i++) {
+                const book = books[i];
+
+                // The id is stored as an attribute of <book>
+                const id = book.getAttribute('id');
+                // title, author and price are child elements
+                const title = book.getElementsByTagName('title')[0].textContent;
+                const author = book.getElementsByTagName('author')[0].textContent;
+                const priceEl = book.getElementsByTagName('price')[0];
+                const price = priceEl.textContent;
+                const currency = priceEl.getAttribute('currency');
+
+                const row = document.createElement('tr');
+
+                const idCell = document.createElement('td');
+                idCell.className = 'id';
+                idCell.textContent = id;
+
+                const titleCell = document.createElement('td');
+                titleCell.textContent = title;
+
+                const authorCell = document.createElement('td');
+                authorCell.textContent = author;
+
+                const priceCell = document.createElement('td');
+                priceCell.className = 'price';
+                priceCell.textContent = currency + ' $' + price;
+
+                row.appendChild(idCell);
+                row.appendChild(titleCell);
+                row.appendChild(authorCell);
+                row.appendChild(priceCell);
+                bookRows.appendChild(row);
+            }
+
+            bookTable.hidden = false;
+            statusPara.textContent = 'Parsed ' + books.length +
+                ' books from book.xml (root element: ' +
+                xmlDoc.documentElement.nodeName + ').';
+        })
+        .catch(err => {
+            statusPara.textContent = 'Could not load the book catalogue: ' + err.message;
+            statusPara.classList.add('error');
+            console.error('Fetch error: ' + err.message);
+        });
+</script>
+</body>
+</html>

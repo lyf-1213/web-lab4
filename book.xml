@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Name: 刘依枫 (Yifeng Liu)
+    Student ID: 247049
+    Date: 2026-10-14
+    Purpose: Lab 4 Part 1 - a simple book catalogue stored as a well-formed
+             XML document. Every <book> carries a unique "id" attribute and
+             the child elements title, author and price.
+    File: book.xml
+-->
+<bookCatalogue>
+    <book id="bk101">
+        <title>XML Step by Step</title>
+        <author>Michael J. Young</author>
+        <price currency="NZD">59.90</price>
+    </book>
+    <book id="bk102">
+        <title>Learning Web Design</title>
+        <author>Jennifer Niederst Robbins</author>
+        <price currency="NZD">74.50</price>
+    </book>
+    <book id="bk103">
+        <title>JavaScript: The Definitive Guide</title>
+        <author>David Flanagan</author>
+        <price currency="NZD">89.99</price>
+    </book>
+    <book id="bk104">
+        <title>HTML5 and CSS3</title>
+        <author>Patrick M. Carey</author>
+        <price currency="NZD">99.00</price>
+    </book>
+    <book id="bk105">
+        <title>JSON at Work</title>
+        <author>Tom Marrs</author>
+        <price currency="NZD">64.25</price>
+    </book>
+</bookCatalogue>

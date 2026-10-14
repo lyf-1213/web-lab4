@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+    Name: 刘依枫 (Yifeng Liu)
+    Student ID: 247049
+    Date: 2026-10-14
+    Purpose: Lab 4 Part 2 - fetch userProfiles.json with the fetch API and
+             display every user's name, email, date of birth, address and
+             preferences on the page.
+    Filename: profiles.html
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="Lab 4, JSON, fetch API, user profiles">
+<title>User Profiles - Lab 4 JSON</title>
+<style>
+    body {
+        margin: 0;
+        padding: 30px 15px;
+        background-color: rgb(240, 244, 250);
+        color: rgb(33, 43, 66);
+        font-family: "Segoe UI", Arial, sans-serif;
+        line-height: 1.5;
+    }
+    main {
+        max-width: 960px;
+        margin: 0 auto;
+        background-color: rgb(255, 255, 255);
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(33, 43, 66, 0.18);
+        padding: 25px 30px 35px;
+    }
+    h1 {
+        margin: 0 0 6px;
+        font-size: 1.9em;
+        color: rgb(20, 70, 130);
+        border-bottom: 3px solid rgb(20, 70, 130);
+        padding-bottom: 8px;
+    }
+    p.subtitle {
+        margin: 0 0 22px;
+        font-size: 0.95em;
+        color: rgb(95, 110, 135);
+    }
+    p#status {
+        margin: 0 0 16px;
+        padding: 10px 14px;
+        border-radius: 6px;
+        background-color: rgb(232, 241, 252);
+        border-left: 5px solid rgb(20, 70, 130);
+        font-size: 0.95em;
+    }
+    p.error {
+        background-color: rgb(253, 235, 235) !important;
+        border-left-color: rgb(190, 40, 40) !important;
+        color: rgb(150, 20, 20);
+    }
+    #profiles {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 20px;
+    }
+    article.profile {
+        border: 1px solid rgb(190, 205, 225);
+        border-radius: 8px;
+        padding: 16px 18px;
+        background-color: rgb(250, 252, 255);
+    }
+    article.profile h2 {
+        margin: 0 0 2px;
+        font-size: 1.25em;
+        color: rgb(20, 70, 130);
+    }
+    article.profile p.email {
+        margin: 0 0 12px;
+        font-size: 0.9em;
+        color: rgb(95, 110, 135);
+    }
+    dl {
+        margin: 0;
+        font-size: 0.95em;
+    }
+    dt {
+        font-weight: bold;
+        color: rgb(60, 80, 110);
+        margin-top: 8px;
+    }
+    dd {
+        margin: 0 0 0 0;
+    }
+    dd ul {
+        margin: 4px 0 0;
+        padding-left: 18px;
+    }
+    .yes {
+        color: rgb(20, 120, 60);
+        font-weight: bold;
+    }
+    .no {
+        color: rgb(170, 60, 40);
+        font-weight: bold;
+    }
+    footer {
+        max-width: 960px;
+        margin: 18px auto 0;
+        text-align: center;
+        font-size: 0.85em;
+        color: rgb(110, 125, 150);
+    }
+</style>
+</head>
+<body>
+<main>
+    <h1>User Profiles</h1>
+    <p class="subtitle">Lab 4 - Part 2: JSON document <code>userProfiles.json</code> fetched and parsed in the browser.</p>
+
+    <p id="status">Loading userProfiles.json &hellip;</p>
+
+    <section id="profiles"></section>
+</main>
+
+<footer>
+    <p>158.258 Web Development &bull; Lab 4 JSON Lab &bull; 247049 刘依枫</p>
+</footer>
+
+<script>
+    // ------------------------------------------------------------------
+    // Lab 4 Part 2: load userProfiles.json with the fetch API, turn the
+    // response into a JavaScript object with response.json() and render
+    // every profile, including the address and preferences objects.
+    // ------------------------------------------------------------------
+    const statusPara = document.getElementById('status');
+    const profilesSection = document.getElementById('profiles');
+
+    // Small helper: build a <dt>/<dd> pair for the definition list
+    function addDetail(list, term, value) {
+        const dt = document.createElement('dt');
+        dt.textContent = term;
+
+        const dd = document.createElement('dd');
+        if (value instanceof Node) {
+            dd.appendChild(value);
+        } else {
+            dd.textContent = value;
+        }
+
+        list.appendChild(dt);
+        list.appendChild(dd);
+    }
+
+    fetch('userProfiles.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Fetch error: ' + response.status);
+            }
+            return response.json();          // parse the JSON body
+        })
+        .then(json => {
+            json.forEach(profile => {
+                const card = document.createElement('article');
+                card.className = 'profile';
+
+                // Name and e-mail
+                const heading = document.createElement('h2');
+                heading.textContent = profile.firstName + ' ' + profile.lastName;
+                card.appendChild(heading);
+
+                const email = document.createElement('p');
+                email.className = 'email';
+                email.textContent = profile.email;
+                card.appendChild(email);
+
+                const details = document.createElement('dl');
+
+                addDetail(details, 'Date of birth', profile.dateOfBirth);
+
+                // Nested address object
+                const address = profile.address;
+                addDetail(details, 'Address',
+                    address.street + ', ' + address.city + ', ' +
+                    address.state + ' ' + address.zipCode);
+
+                // Nested preferences object
+                const prefList = document.createElement('ul');
+
+                const themeItem = document.createElement('li');
+                themeItem.textContent = 'Theme: ' + profile.preferences.theme;
+                prefList.appendChild(themeItem);
+
+                const langItem = document.createElement('li');
+                langItem.textContent = 'Language: ' + profile.preferences.language;
+                prefList.appendChild(langItem);
+
+                const notifyItem = document.createElement('li');
+                notifyItem.textContent = 'Notifications: ' +
+                    (profile.preferences.notifications ? 'on' : 'off');
+                prefList.appendChild(notifyItem);
+
+                const subItem = document.createElement('li');
+                const subSpan = document.createElement('span');
+                subSpan.className = profile.preferences.subscription ? 'yes' : 'no';
+                subSpan.textContent = profile.preferences.subscription ? 'Yes' : 'No';
+                subItem.textContent = 'Newsletter subscription: ';
+                subItem.appendChild(subSpan);
+                prefList.appendChild(subItem);
+
+                addDetail(details, 'Preferences', prefList);
+
+                card.appendChild(details);
+                profilesSection.appendChild(card);
+            });
+
+            statusPara.textContent = 'Loaded ' + json.length +
+                ' user profiles from userProfiles.json.';
+        })
+        .catch(err => {
+            statusPara.textContent = 'Could not load the user profiles: ' + err.message;
+            statusPara.classList.add('error');
+            console.error('Fetch error: ' + err.message);
+        });
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+[
+  {
+    "firstName": "Yifeng",
+    "lastName": "Liu",
+    "email": "yifeng.liu@example.com",
+    "dateOfBirth": "2003-05-18",
+    "address": {
+      "street": "12 Fitzherbert Avenue",
+      "city": "Palmerston North",
+      "state": "Manawatu",
+      "zipCode": "4410"
+    },
+    "preferences": {
+      "theme": "dark",
+      "language": "zh-CN",
+      "notifications": true,
+      "subscription": true
+    }
+  },
+  {
+    "firstName": "Aroha",
+    "lastName": "Ngata",
+    "email": "aroha.ngata@example.com",
+    "dateOfBirth": "1998-11-02",
+    "address": {
+      "street": "48 Cuba Street",
+      "city": "Wellington",
+      "state": "Wellington",
+      "zipCode": "6011"
+    },
+    "preferences": {
+      "theme": "light",
+      "language": "en-NZ",
+      "notifications": false,
+      "subscription": true
+    }
+  },
+  {
+    "firstName": "James",
+    "lastName": "Cooper",
+    "email": "james.cooper@example.com",
+    "dateOfBirth": "2001-07-24",
+    "address": {
+      "street": "7 Queen Street",
+      "city": "Auckland",
+      "state": "Auckland",
+      "zipCode": "1010"
+    },
+    "preferences": {
+      "theme": "system",
+      "language": "en-GB",
+      "notifications": true,
+      "subscription": false
+    }
+  },
+  {
+    "firstName": "Mei",
+    "lastName": "Chen",
+    "email": "mei.chen@example.com",
+    "dateOfBirth": "2004-02-09",
+    "address": {
+      "street": "231 Riccarton Road",
+      "city": "Christchurch",
+      "state": "Canterbury",
+      "zipCode": "8041"
+    },
+    "preferences": {
+      "theme": "light",
+      "language": "ja-JP",
+      "notifications": false,
+      "subscription": false
+    }
+  }
+]
